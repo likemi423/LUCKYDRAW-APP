@@ -5,30 +5,28 @@
 const SUPABASE_URL = 'https://sfauzixrcrscsxpyglaj.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmYXV6aXhyY3JzY3N4cHlnbGFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5MzA0MjQsImV4cCI6MjA4ODUwNjQyNH0.DMpfhk_wGBVX-CH2FUxl1u6bO-gy2uXKMmZx8eYlNo0';
 
-// 初始化 Supabase
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// 初始化 Supabase (compatible with UMD build)
+const _sb = window.supabase || supabase;
+const supabaseClient = _sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const SupabaseAPI = {
     async login(email, password) {
-        return await supabase.auth.signInWithPassword({
-            email,
-            password
-        });
+        return await supabaseClient.auth.signInWithPassword({ email, password });
     },
 
     async logout() {
-        return await supabase.auth.signOut();
+        return await supabaseClient.auth.signOut();
     },
 
     onAuthStateChange(callback) {
-        supabase.auth.onAuthStateChange((event, session) => {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
             callback(event, session);
         });
     },
 
     async recordWinners(theme, prizeName, winners) {
         if (SUPABASE_URL === 'YOUR_SUPABASE_URL') {
-            console.warn('⚠️ Supabase 尚未配置，暂时只在本地保存中奖资料。');
+            console.warn('\u26a0\ufe0f Supabase \u5c1a\u672a\u914d\u7f6e\uff0c\u6682\u65f6\u53ea\u5728\u672c\u5730\u4fdd\u5b58\u4e2d\u5956\u8d44\u6599\u3002');
             return;
         }
 
@@ -41,18 +39,17 @@ const SupabaseAPI = {
         }));
 
         try {
-            // 你需要在 Supabase 中创建一个名为 `lucky_draw_winners` 的数据表
-            const { data, error } = await supabase
+            const { data, error } = await supabaseClient
                 .from('lucky_draw_winners')
                 .insert(dataToInsert);
 
             if (error) {
-                console.error('❌ 上传中奖数据到 Supabase 失败:', error);
+                console.error('\u274c \u4e0a\u4f20\u4e2d\u5956\u6570\u636e\u5230 Supabase \u5931\u8d25:', error);
             } else {
-                console.log('✅ 成功将最新中奖数据上传到 Supabase:', dataToInsert);
+                console.log('\u2705 \u6210\u529f\u5c06\u6700\u65b0\u4e2d\u5956\u6570\u636e\u4e0a\u4f20\u5230 Supabase:', dataToInsert);
             }
         } catch (err) {
-            console.error('网络或未知错误:', err);
+            console.error('\u7f51\u7edc\u6216\u672a\u77e5\u9519\u8bef:', err);
         }
     }
 };

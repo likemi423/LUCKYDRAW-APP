@@ -266,7 +266,8 @@
 
     <div class="header-controls flex" style="gap: 1rem;">
         <button id="btnAuthToggle" class="btn btn-outline" style="background: rgba(0,0,0,0.5);">🔐 管理员登录</button>
-        <button id="btnOpenSettings" class="btn btn-outline" style="background: rgba(0,0,0,0.5); display: none;">⚙️ 抽奖设置</button>
+        <button id="btnOpenSettings" class="btn btn-outline" style="background: rgba(0,0,0,0.5); display: none;">⚙️
+            抽奖设置</button>
     </div>
 
     <h1 class="main-title" id="mainTitle">LUCKY DRAW</h1>
@@ -333,7 +334,9 @@
                 <label>通行密码</label>
                 <input type="password" id="txtPassword" placeholder="••••••••" />
             </div>
-            <p id="loginErrorMsg" style="color: var(--danger); font-size: 0.9rem; text-align: left; display: none; margin-bottom: 1rem;"></p>
+            <p id="loginErrorMsg"
+                style="color: var(--danger); font-size: 0.9rem; text-align: left; display: none; margin-bottom: 1rem;">
+            </p>
             <button class="btn btn-primary w-full" id="btnDoLogin" style="width: 100%;">确认登录</button>
             <button class="btn btn-outline w-full" id="btnCloseLogin" style="width: 100%; margin-top: 1rem;">取消</button>
         </div>
@@ -391,7 +394,8 @@
                             <label>请输入候选人名单（每行一个名字，或用逗号分隔）</label>
                             <textarea id="txtParticipantsInput" placeholder="张三&#10;李四&#10;王五"></textarea>
                         </div>
-                        <button class="btn btn-primary w-full" id="btnAddParticipants" style="width: 100%">➕ 批量导入名单</button>
+                        <button class="btn btn-primary w-full" id="btnAddParticipants" style="width: 100%">➕
+                            批量导入名单</button>
                     </div>
 
                     <div class="glass-panel mt-4" style="padding: 1.5rem;">
@@ -402,7 +406,8 @@
                         <div id="prizeListContainer" class="flex-col" style="gap: 1rem; display: flex;">
                             <!-- Prize rows injected by JS -->
                         </div>
-                        <button class="btn btn-outline w-full mt-4" id="btnAddPrizeRow" style="width: 100%">➕ 新增奖项</button>
+                        <button class="btn btn-outline w-full mt-4" id="btnAddPrizeRow" style="width: 100%">➕
+                            新增奖项</button>
                     </div>
                 </div>
 
@@ -425,7 +430,8 @@
                                 <!-- History injected by JS -->
                             </tbody>
                         </table>
-                        <div id="emptyHistoryState" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                        <div id="emptyHistoryState"
+                            style="text-align: center; padding: 2rem; color: var(--text-muted);">
                             暂无中奖记录，快去开启抽奖吧！
                         </div>
                     </div>
@@ -436,7 +442,7 @@
 
     <!-- External Libs -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
     <!-- App Scripts -->
     <script src="js/supabaseClient.js"></script>
@@ -489,7 +495,7 @@
 
         btnAuthToggle.addEventListener('click', async () => {
             if (currentUser) {
-                if(confirm('确定要退出登录吗？退出后将会锁定操作面板。')){
+                if (confirm('确定要退出登录吗？退出后将会锁定操作面板。')) {
                     await window.SupabaseAPI.logout();
                 }
             } else {
@@ -539,8 +545,9 @@
                     btnDoLogin.innerText = '确认登录';
                     btnDoLogin.disabled = false;
                 }
-            } catch(e) {
-                loginErrorMsg.innerText = '⚠️ 网络错误，请检查网络并重试';
+            } catch (e) {
+                console.error('Login exception:', e);
+                loginErrorMsg.innerText = '⚠️ 错误: ' + (e?.message || JSON.stringify(e));
                 loginErrorMsg.style.display = 'block';
                 btnDoLogin.innerText = '确认登录';
                 btnDoLogin.disabled = false;
