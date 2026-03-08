@@ -187,6 +187,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     span.innerText = r.name;
                 });
             });
+            // Tick sound every interval
+            if (window.SoundFX) SoundFX.playTick();
         }, 100);
     };
 
@@ -246,6 +248,9 @@ document.addEventListener('DOMContentLoaded', () => {
         modalPrizeName.innerText = `🎉 恭喜获得 ${prizeName} 🎉`;
         modalWinnerNames.innerHTML = winners.map(w => `<div>${w.name}</div>`).join('');
         winnerModalOverlay.classList.add('active');
+
+        // 🎉 Play Victory Fanfare!
+        if (window.SoundFX) SoundFX.playWinFanfare();
 
         // Confetti Fireworks
         const duration = 5 * 1000;
