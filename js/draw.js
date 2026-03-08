@@ -41,7 +41,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         updateLabels();
+        updateMainTitle();
         renderSlots(parseInt(txtDrawCount.value));
+    };
+
+    const updateMainTitle = () => {
+        if (!currentData) return;
+        const theme = currentData.theme || "LUCKY DRAW";
+        if (selPrize.options.length > 0) {
+            const pName = selPrize.options[selPrize.selectedIndex].text;
+            mainTitle.innerText = `${theme} - 抽取${pName}`;
+        } else {
+            mainTitle.innerText = theme;
+        }
     };
 
     const updateLabels = () => {
@@ -98,9 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Interactions
     selPrize.addEventListener('change', () => {
         updateLabels();
+        updateMainTitle();
         renderSlots(parseInt(txtDrawCount.value));
-        const pName = selPrize.options[selPrize.selectedIndex].text;
-        mainTitle.innerText = `抽取 ${pName}`;
     });
 
     btnCountMinus.addEventListener('click', () => {
@@ -276,8 +287,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Init
     loadDataAndRefreshUI();
 
-    // Fallback if title lacks config
-    if (selPrize.options.length > 0) {
-        mainTitle.innerText = `抽取 ${selPrize.options[selPrize.selectedIndex].text}`;
-    }
 });

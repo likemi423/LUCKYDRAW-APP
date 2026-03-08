@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const statTotalPrizes = document.getElementById('statTotalPrizes');
     const statDrawnPrizes = document.getElementById('statDrawnPrizes');
 
+    const txtThemeInput = document.getElementById('txtThemeInput');
+    const btnSaveTheme = document.getElementById('btnSaveTheme');
+
     const txtParticipantsInput = document.getElementById('txtParticipantsInput');
     const btnAddParticipants = document.getElementById('btnAddParticipants');
     const btnClearParticipants = document.getElementById('btnClearParticipants');
@@ -21,7 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const fetchAndRender = () => {
         const data = AppData.load();
 
-        // 1. Update stats
+        // 1. Update theme input
+        if (txtThemeInput) {
+            txtThemeInput.value = data.theme || "LUCKY DRAW";
+        }
+
+        // 2. Update stats
         statTotalParticipants.innerText = data.participants.length;
         const prizeSum = data.prizes.reduce((sum, p) => sum + parseInt(p.count || 0), 0);
         statTotalPrizes.innerText = prizeSum;
@@ -68,6 +76,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Actions
+    if (btnSaveTheme) {
+        btnSaveTheme.addEventListener('click', () => {
+            const val = txtThemeInput.value.trim();
+            if (!val) return alert('请输入有效的主题！');
+            AppData.updateTheme(val);
+            fetchAndRender();
+            alert('主题已成功保存！');
+        });
+    }
+
     btnAddParticipants.addEventListener('click', () => {
         const val = txtParticipantsInput.value;
         if (!val.trim()) return alert('请输入有效名单！');

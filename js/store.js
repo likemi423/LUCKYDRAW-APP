@@ -7,7 +7,8 @@ const defaultData = {
         { id: "p2", name: "二等奖", count: 2, drawnCount: 0 },
         { id: "p3", name: "三等奖", count: 5, drawnCount: 0 }
     ],
-    winners: []
+    winners: [],
+    theme: "LUCKY DRAW"
 };
 
 // Data Layer
@@ -60,6 +61,12 @@ const AppData = {
                 drawnCount: existing ? existing.drawnCount : 0
             };
         });
+        this.save(data);
+    },
+
+    updateTheme(theme) {
+        const data = this.load();
+        data.theme = theme;
         this.save(data);
     },
 
