@@ -268,6 +268,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === STORAGE_KEY && !isRolling) loadDataAndRefreshUI();
     });
 
+    // Internal event if stored in same tab (from settings drawer)
+    window.addEventListener('storageUpdated', () => {
+        if (!isRolling) loadDataAndRefreshUI();
+    });
+
     // Init
     loadDataAndRefreshUI();
 
