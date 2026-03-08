@@ -506,17 +506,44 @@
         });
 
         btnDoLogin.addEventListener('click', async () => {
+            const emailVal = txtEmail.value.trim();
+            const passVal = txtPassword.value;
+            if (!emailVal || !passVal) {
+                loginErrorMsg.innerText = '⚠️ 请填写邮箱和密码';
+                loginErrorMsg.style.display = 'block';
+                return;
+            }
+
             btnDoLogin.innerText = '登录中...';
             btnDoLogin.disabled = true;
-            const { data, error } = await window.SupabaseAPI.login(txtEmail.value, txtPassword.value);
-            btnDoLogin.innerText = '确认登录';
-            btnDoLogin.disabled = false;
+            loginErrorMsg.style.display = 'none';
 
-            if (error) {
-                loginErrorMsg.innerText = '⚠️ 登录失败: ' + (error.message.includes('Invalid') ? '邮箱或密码错误' : error.message);
+            try {
+                const { data, error } = await window.SupabaseAPI.login(emailVal, passVal);
+
+                if (error) {
+                    let msg = error.message;
+                    if (msg.includes('Invalid')) msg = '邮箱或密码错误，请重新输入';
+                    else if (msg.includes('Email not confirmed')) msg = '邮箱尚未确认，请前往 Supabase 后台将用户设为已确认状态';
+                    loginErrorMsg.innerText = '⚠️ 登录失败: ' + msg;
+                    loginErrorMsg.style.display = 'block';
+                    btnDoLogin.innerText = '确认登录';
+                    btnDoLogin.disabled = false;
+                } else {
+                    // Explicitly update UI on success
+                    currentUser = data.user;
+                    btnAuthToggle.innerText = '🔓 退出登录';
+                    btnOpenSettings.style.display = 'inline-flex';
+                    btnActionMain.disabled = false;
+                    loginModalOverlay.style.display = 'none';
+                    btnDoLogin.innerText = '确认登录';
+                    btnDoLogin.disabled = false;
+                }
+            } catch(e) {
+                loginErrorMsg.innerText = '⚠️ 网络错误，请检查网络并重试';
                 loginErrorMsg.style.display = 'block';
-            } else {
-                // Success triggered via onAuthStateChange automatically
+                btnDoLogin.innerText = '确认登录';
+                btnDoLogin.disabled = false;
             }
         });
     </script>
