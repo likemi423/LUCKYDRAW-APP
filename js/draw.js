@@ -124,6 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnCountPlus.addEventListener('click', () => {
         const p = currentData.prizes.find(pz => pz.id === selPrize.value);
+        if (!p) return alert('当前没有奖项，请先前往后台添加！');
+        
         const rem = Math.max(0, parseInt(p.count) - (p.drawnCount || 0));
         const maxData = currentData.participants.length;
 
@@ -148,6 +150,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const startDraw = () => {
         const pool = currentData.participants;
         const prize = currentData.prizes.find(pz => pz.id === selPrize.value);
+        
+        if (!prize) {
+            return alert('当前没有可用奖项，请先前往后台添加！');
+        }
+
         const drawCount = parseInt(txtDrawCount.value);
         const remaining = Math.max(0, parseInt(prize.count) - (prize.drawnCount || 0));
 
